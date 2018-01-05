@@ -1,12 +1,14 @@
-package cn.pingweb.core;
+package cn.pingweb.core.impl;
 
+import cn.pingweb.core.Task;
+import cn.pingweb.core.TaskCache;
+import cn.pingweb.core.TaskRunnerListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  *
@@ -52,11 +54,11 @@ public class TaskRunner implements Runnable {
 
     }
 
-    public void setFuture(Future future) {
+    void setFuture(Future future) {
         this.future = future;
     }
 
-    public boolean cancelTask(Task task) {
+    boolean cancelTask(Task task) {
         try {
             taskLock.lock();
             taskCache.removeMapCahce(task.getTaskId());
@@ -69,11 +71,11 @@ public class TaskRunner implements Runnable {
         return false;
     }
 
-    public Task getTask() {
+    Task getTask() {
         return task;
     }
 
-    public void setTaskCache(TaskCache taskCache) {
+    void setTaskCache(TaskCache taskCache) {
         this.taskCache = taskCache;
     }
 }

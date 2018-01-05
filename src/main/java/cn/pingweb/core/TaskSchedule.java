@@ -1,5 +1,7 @@
 package cn.pingweb.core;
 
+import cn.pingweb.core.impl.TaskRunner;
+
 import java.util.List;
 
 /**
