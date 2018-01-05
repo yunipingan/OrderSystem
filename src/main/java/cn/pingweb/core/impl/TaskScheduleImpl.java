@@ -59,6 +59,7 @@ public class TaskScheduleImpl implements TaskSchedule, TaskCache {
         Task task = taskRunner.getTask();
         Future future = scheduledExecutorService.schedule(taskRunner, task.getTriggerTime(), task.getTimeUnit());
         taskRunner.setFuture(future);
+        taskRunner.setTaskCache(this);
         taskRunnerMap.put(task.getTaskId(), taskRunner);
     }
 

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  *
@@ -70,5 +71,9 @@ public class TaskRunner implements Runnable {
 
     public Task getTask() {
         return task;
+    }
+
+    public void setTaskCache(TaskCache taskCache) {
+        this.taskCache = taskCache;
     }
 }
