@@ -9,7 +9,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Created by zhuyuping on 2018/1/4.
+ *
+ * @author zhuyuping
+ * @date 2018/1/4
  */
 public class TaskRunner implements Runnable {
 

@@ -9,7 +9,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
- * Created by zhuyuping on 2018/1/3.
+ *
+ * @author zhuyuping
+ * @date 2018/1/3
  */
 public class TaskScheduleImpl implements TaskSchedule, TaskCache {
 
@@ -55,8 +57,7 @@ public class TaskScheduleImpl implements TaskSchedule, TaskCache {
     @Override
     public void startTask(TaskRunner taskRunner) {
         Task task = taskRunner.getTask();
-        long duration = task.getDuration();
-        Future future = scheduledExecutorService.schedule(taskRunner, task.getDuration(), task.getTimeUnit());
+        Future future = scheduledExecutorService.schedule(taskRunner, task.getTriggerTime(), task.getTimeUnit());
         taskRunner.setFuture(future);
         taskRunnerMap.put(task.getTaskId(), taskRunner);
     }

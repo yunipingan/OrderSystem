@@ -39,6 +39,10 @@ public class RedPacketService implements CommandLineRunner, TaskRunnerListener{
         redPacketDao.updateRedPacket((RedPacket) task);
     }
 
+    /**
+     * 添加未被领取的红包
+     * @param redPacket
+     */
     public void addUnReceivedRedPacket(RedPacket redPacket) {
         TaskRunner taskRunner = new TaskRunner(redPacket, this);
         taskSchedule.startTask(taskRunner);

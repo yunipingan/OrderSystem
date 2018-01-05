@@ -23,7 +23,7 @@ public class RedPacket implements Task {
     }
 
     @Override
-    public long getDuration() {
+    public long getTriggerTime() {
         if (invaildTime.getTime() > System.currentTimeMillis()) {
             return (invaildTime.getTime() - issueTime.getTime()) / 1000L;
         }
