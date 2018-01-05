@@ -1,11 +1,10 @@
-package cn.pingweb.core;
+package cn.pingweb.order;
 
 import cn.pingweb.dao.OrderDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -13,10 +12,10 @@ import java.util.concurrent.*;
  * Created by zhuyuping on 2018/1/3.
  */
 @Component
-public class OrderSchedule implements CommandLineRunner, UnpaidOrderCache{
+public class OrderScheduleImpl implements CommandLineRunner, OrderSchedule, UnpaidOrderCache{
 
     private volatile static ScheduledExecutorService scheduledExecutorService;
-    private volatile static OrderSchedule orderSchedule;
+    private volatile static OrderScheduleImpl orderSchedule;
     // 不用缓存，从数据库里取的话需要重新new，无法lock同一对象
     private static ConcurrentHashMap<String, UnpaidOrderTask> orderFailureMap = new ConcurrentHashMap<String, UnpaidOrderTask>();
 
@@ -31,11 +30,11 @@ public class OrderSchedule implements CommandLineRunner, UnpaidOrderCache{
      * 改成spring的bean
      * @return
      */
-    public static OrderSchedule getInstance() {
+    public static OrderScheduleImpl getInstance() {
         if (null == orderSchedule) {
-            synchronized (OrderSchedule.class) {
+            synchronized (OrderScheduleImpl.class) {
                 if (null == orderSchedule) {
-                    orderSchedule = new OrderSchedule();
+                    orderSchedule = new OrderScheduleImpl();
                 }
             }
         }
@@ -50,25 +49,27 @@ public class OrderSchedule implements CommandLineRunner, UnpaidOrderCache{
     private void loadUnpaidOrderTask(){
         List<Order> orderList = orderDao.queryUnpaidOrder();
         for(Order order : orderList) {
-            this.start(new UnpaidOrderTask(order, this));
+            this.startUnpaidOrderTask(new UnpaidOrderTask(order, this));
         }
     }
 
     // 用户未付款才会触发
-    public void start(UnpaidOrderTask orderFailure){
-        Order order = orderFailure.getOrder();
+    @Override
+    public void startUnpaidOrderTask(UnpaidOrderTask unpaidOrderTask){
+        Order order = unpaidOrderTask.getOrder();
         long duration = order.getDuration();
-        Future future = scheduledExecutorService.schedule(orderFailure, duration, orderFailure.getTimeUnit());
-        orderFailure.setFuture(future);
-        orderFailureMap.put(order.getId(), orderFailure);
+        Future future = scheduledExecutorService.schedule(unpaidOrderTask, duration, unpaidOrderTask.getTimeUnit());
+        unpaidOrderTask.setFuture(future);
+        orderFailureMap.put(order.getId(), unpaidOrderTask);
     }
 
     // 用户付款成功，取消订单失效的定时任务
-    public boolean removeUnpaidOrder(String orderId) {
+    @Override
+    public boolean cancelUnpaidOrderTask(String orderId) {
 
-        UnpaidOrderTask orderFailure = orderFailureMap.get(orderId);
-        removeUnpaidOrder(orderId);
-        return orderFailure.removeUnpaidOrder();
+        UnpaidOrderTask unpaidOrderTask = orderFailureMap.get(orderId);
+        removeMapCahce(orderId);
+        return unpaidOrderTask.removeUnpaidOrder();
     }
 
     private String getKey(String orderId) {
@@ -80,15 +81,15 @@ public class OrderSchedule implements CommandLineRunner, UnpaidOrderCache{
         orderFailureMap.remove(getKey(orderId));
     }
 
-    // 用户付款成功，取消订单失效的定时任务
-    public boolean cancelUnpaidOrder(UnpaidOrderTask unpaidOrderTask) {
-
-        Future future = unpaidOrderTask.getFuture();
-        if (!future.isDone()) {
-            return future.cancel(true);
-        }
-        return false;
-    }
+//    // 用户付款成功，取消订单失效的定时任务
+//    public boolean cancelUnpaidOrderTask(UnpaidOrderTask unpaidOrderTask) {
+//
+//        Future future = unpaidOrderTask.getFuture();
+//        if (!future.isDone()) {
+//            return future.cancel(true);
+//        }
+//        return false;
+//    }
 
     @Override
     public void run(String... strings) throws Exception {

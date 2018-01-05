@@ -1,4 +1,4 @@
-package cn.pingweb.core;
+package cn.pingweb.order;
 
 /**
  * Created by zhuyuping on 2018/1/4.

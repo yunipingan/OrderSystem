@@ -1,6 +1,6 @@
 package cn.pingweb.service;
 
-import cn.pingweb.core.*;
+import cn.pingweb.order.*;
 import cn.pingweb.dao.OrderDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ public class OrderServiceTest {
     OrderDao orderDao;
 
     @Mock
-    OrderSchedule orderSchedule;
+    OrderScheduleImpl orderSchedule;
 
 
     @Test
@@ -26,7 +26,7 @@ public class OrderServiceTest {
 
         for (int i = 0; i < 10; i++) {
             Order order = new Order("123", OrderStatus.UNPAID, 2000);
-            orderSchedule.start(new UnpaidOrderTask(order, orderSchedule) {
+            orderSchedule.startUnpaidOrderTask(new UnpaidOrderTask(order, orderSchedule) {
                 @Override
                 public void taskResult(Order obj) {
                     System.out.println("update order");

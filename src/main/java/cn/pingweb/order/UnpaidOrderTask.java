@@ -1,6 +1,5 @@
-package cn.pingweb.core;
+package cn.pingweb.order;
 
-import cn.pingweb.dao.OrderDao;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -45,6 +44,11 @@ public class UnpaidOrderTask implements Runnable{
         }
         logger.info(order + "订单失效");
         order.setStatus(OrderStatus.CANCEL);
+//        try {
+//            this.taskResult(order);
+//        } catch (Exception e) {
+//            logger.error(e.getMessage());
+//        }
         this.taskResult(order);
         orderLock.unlock();
     }
@@ -57,7 +61,7 @@ public class UnpaidOrderTask implements Runnable{
         logger.info("已经获得OrderFailure锁");
         unpaidOrderCache.removeMapCahce(order.getId());
         try {
-            Thread.sleep(4000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -68,6 +72,7 @@ public class UnpaidOrderTask implements Runnable{
         return false;
     }
 
-    public void taskResult(Order order){ throw new RuntimeException("You must overwrite this method");};
-
+    public void taskResult(Order order)throws RuntimeException{
+        throw new RuntimeException("You must overwrite this method");
+    }
 }

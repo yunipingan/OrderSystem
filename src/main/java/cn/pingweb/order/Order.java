@@ -1,4 +1,4 @@
-package cn.pingweb.core;
+package cn.pingweb.order;
 
 import lombok.Data;
 import lombok.ToString;

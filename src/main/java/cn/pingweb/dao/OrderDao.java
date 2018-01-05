@@ -1,6 +1,6 @@
 package cn.pingweb.dao;
 
-import cn.pingweb.core.Order;
+import cn.pingweb.order.Order;
 
 import java.util.List;
 
