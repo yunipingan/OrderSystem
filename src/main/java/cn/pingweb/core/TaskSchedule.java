@@ -1,7 +1,5 @@
 package cn.pingweb.core;
 
-import cn.pingweb.order.UnpaidOrderTask;
-
 import java.util.List;
 
 /**

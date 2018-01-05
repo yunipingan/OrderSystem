@@ -1,6 +1,5 @@
 package cn.pingweb.core;
 
-import cn.pingweb.order.UnpaidOrderTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
